@@ -152,11 +152,6 @@ export default function CreateTrip() {
 
     if (!currentCity || !currentCountry || !endOfTrip.end_at) {
       toast.error("Veuillez remplir tous les champs obligatoires");
-      console.log("Champs manquants:", {
-        currentCity,
-        country: currentCountry,
-        endOfTrip: endOfTrip.end_at,
-      });
       return;
     }
 
@@ -169,8 +164,6 @@ export default function CreateTrip() {
       country: currentCountry,
       image_url: imageUrl,
     };
-
-    console.log("Données du voyage à envoyer:", newTrip);
 
     try {
       const response = await fetch(

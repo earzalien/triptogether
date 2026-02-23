@@ -91,7 +91,6 @@ function TripBudgetPage() {
       }
 
       const data = await response.json();
-      console.log("MEMBERS DATA:", data);
       setMembers(data);
     } catch (error) {
       toast.error("Erreur chargement participants");
