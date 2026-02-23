@@ -217,7 +217,7 @@ function TripBudgetPage() {
                 <div key={expense.id} className="expense-card">
                   <div className="expense-header-row">
                     <div className="expense-left">
-                      <div className="expense-icon">$</div>
+                      <div className="expense-icon">&euro;</div>
 
                       <div>
                         <h4 className="expense-description">{expense.title}</h4>
