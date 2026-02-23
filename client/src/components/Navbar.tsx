@@ -76,7 +76,7 @@ export default function Navbar() {
                 <img
                   src="/images/utilisateur.png"
                   className="user-icone"
-                  alt=""
+                  alt="Profil de l'utilisateur"
                 />
               </button>
 
