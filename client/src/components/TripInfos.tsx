@@ -25,13 +25,13 @@ function TripInfos({ trip }: TripInfosProps) {
       <header
         className="trip-header"
         style={{
-          backgroundImage: `url("/images/martinique.webp")`,
+          backgroundImage: `url(${trip.image_url || "/images/martinique.webp"})`,
         }}
       />
       {/* <header
         className="trip-header"
         style={{
-          backgroundImage: `url(${trip.image_url || "/images/default-city.jpg"})`,
+          backgroundImage: `url(${trip.image_url || "/images/martinique.webp"})`,
         }}
       /> */}
       <section className="trip-trip-infos">
