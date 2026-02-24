@@ -14,20 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-- name: Setup SSH agent
-  uses: webfactory/ssh-agent@v0.9.0
-  with:
-    ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-
-      - name: Deploy to VPS
+      - name: Deploy
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "🚀 Deploying PRODUCTION"
-            ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash /home/ubuntu/deploy-triptogether.sh"
+            ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash /home/ubuntu/deploy-triptogether.sh"
+          else
+            echo "🧪 Deploying STAGING"
+            ssh -o StrictHostKeyChecking=no ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash /home/ubuntu/deploy-triptogether-staging.sh"
           fi
 
-          if [ "${{ github.ref }}" = "refs/heads/staging" ]; then
-            echo "🧪 Deploying STAGING"
-            ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash /home/ubuntu/deploy-triptogether-staging.sh"
-          fi
