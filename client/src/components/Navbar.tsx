@@ -60,11 +60,7 @@ export default function Navbar() {
           </button>
         )}
 
-        <div
-          className="navbar-profile"
-          onMouseEnter={() => setOpenNavBar(true)}
-          onMouseLeave={() => setOpenNavBar(false)}
-        >
+        <div className="navbar-profile">
           {auth ? (
             <div>
               <button
