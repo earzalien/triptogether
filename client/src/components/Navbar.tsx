@@ -56,7 +56,7 @@ export default function Navbar() {
             className="navbar-cta"
             onClick={navigateToCreateTrip}
           >
-            Crée ton voyage !
+            Créer un voyage
           </button>
         )}
 

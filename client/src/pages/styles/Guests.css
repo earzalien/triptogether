@@ -117,7 +117,7 @@ li:last-child {
   color: #b91c1c;
 }
 
-.btn-primary,
+.btn-primairy,
 .btn-danger,
 .btn-role {
   border-radius: 10px;
@@ -130,12 +130,12 @@ li:last-child {
   min-height: 14px;
 }
 
-.btn-primary {
+.btn-primairy {
   background-color: var(--primary-button);
   color: #ffffff;
 }
 
-.btn-primary:hover {
+.btn-primairy:hover {
   background-color: var(--primary-button);
 }
 
@@ -195,7 +195,7 @@ li:last-child {
     padding: 3px 8px;
   }
 
-  .btn-primary,
+  .btn-primairy,
   .btn-danger,
   .btn-role {
     padding: 6px 10px;

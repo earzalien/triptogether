@@ -48,33 +48,35 @@
   font-weight: 600;
   border-radius: 10px;
   text-decoration: none;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.3s ease;
   cursor: pointer;
   border: 2px solid transparent;
-  min-width: 394px;
+  width: 280px;
+  box-sizing: border-box;
 }
 
-.btn-primairy {
+.btn-primary {
   background-color: var(--primary-button);
   color: var(--white);
   border-color: var(--primary-button);
   font-size: var(--font-size-M);
 }
 
-.btn-primairy:hover {
-  background-color: var(--primary-button);
-  border-color: var(--primary-button);
+.btn-primary:hover {
+  opacity: 0.9;
 }
 
-.btn-secondairy {
+.btn-secondary {
   background-color: var(--white);
   color: var(--primary-button);
   border-color: var(--primary-button);
   font-size: var(--font-size-M);
 }
 
-.btn-secondairy:hover {
+.btn-secondary:hover {
   background-color: #f8f8f8;
 }
 
@@ -133,9 +135,9 @@
 }
 
 .features {
-  display: flex;
-  justify-content: center;
-  gap: 3vw;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
   margin-top: 48px;
 }
 
@@ -145,7 +147,6 @@
   border-radius: 12px;
   padding: 32px 24px;
   transition: all 0.3s ease;
-  max-width: 400px;
 }
 
 .feature-card:hover {
@@ -161,7 +162,7 @@
 .feature-card-title {
   font-size: 1.25rem;
   font-weight: 700;
-  margin: 12px 0 12px;
+  margin: 12px 0;
   color: var(--black);
   text-align: left;
 }
@@ -175,7 +176,7 @@
 }
 
 @media (max-width: 968px) {
-  .features-grid {
+  .features {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -196,11 +197,12 @@
 
   .btn-cta {
     width: 100%;
+    max-width: 320px;
+    font-size: 0.95rem;
   }
 
-  .features-grid {
+  .features {
     grid-template-columns: 1fr;
-    gap: 24px;
   }
 
   .trips-badge {
