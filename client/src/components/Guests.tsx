@@ -64,7 +64,8 @@ function Guests({ title, invited, type, delete: onDelete }: GuestsProps) {
                       Organisateur
                     </span>
                   ) : (
-                    <button
+                      <button
+                      type = "button"
                       className="badge badge-action"
                       onClick={() => onDelete?.(invitation)}
                     >

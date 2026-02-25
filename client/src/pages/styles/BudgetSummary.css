@@ -2,36 +2,46 @@
   padding: 1.5rem;
 }
 
+/* Container */
 .budget-summary {
-  margin: 40px 0 40px 0;
+  margin: 40px 0;
   display: flex;
   gap: 1rem;
+  flex-wrap: wrap;
+  /* ✅ évite débordement */
 }
 
+/* Card */
 .budget-card {
+  flex: 1;
+  /* ✅ prend l'espace dispo */
+  min-width: 250px;
+  /* ✅ évite écrasement */
   background: white;
-  border-radius: 10px;
-  padding: 0.9rem;
+  border-radius: 12px;
+  padding: 1.2rem;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-  width: 600px;
 }
 
+/* Label */
 .card-label {
   font-size: 0.9rem;
-  color: #666;
+  color: #64748b;
   margin-bottom: 0.5rem;
 }
 
+/* Value */
 .budget-card h3 {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 600;
   margin: 0;
 }
 
+/* States */
 .positive h3 {
-  color: #1e7e34;
+  color: #16a34a;
 }
 
 .negative h3 {
-  color: #c82333;
+  color: #dc2626;
 }
