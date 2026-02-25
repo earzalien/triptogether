@@ -6,20 +6,25 @@ function Home() {
   const [countTrip, setCountTrip] = useState<number | null>(null);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/count`).then(
-      async (response) => {
+    const fetchTripCount = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/trips/count`,
+        );
+
         if (!response.ok) {
-          console.error(
-            "Backend erreur:",
-            response.status,
-            await response.json(),
-          );
           throw new Error(`Erreur ${response.status}`);
         }
+
         const count = await response.json();
         setCountTrip(count);
-      },
-    );
+      } catch (error) {
+        console.error("Erreur récupération nombre de voyages:", error);
+        setCountTrip(0);
+      }
+    };
+
+    fetchTripCount();
   }, []);
 
   return (
@@ -35,10 +40,10 @@ function Home() {
           préférées et partagez les dépenses. Tout ça au même endroit.
         </p>
         <div className="hero-cta">
-          <Link to="/create-trip" className="btn-cta btn-primairy">
-            Commencer maintenant
+          <Link to="/create-trip" className="btn-cta btn-primary">
+            Créer un voyage
           </Link>
-          <Link to="/my-trips" className="btn-cta btn-secondairy">
+          <Link to="/my-trips" className="btn-cta btn-secondary">
             Voir mes voyages
           </Link>
         </div>
@@ -87,7 +92,7 @@ function Home() {
             <span className="badge-text">
               {countTrip !== null
                 ? `${countTrip} voyages ont déjà été créés`
-                : "0"}
+                : "—"}
             </span>
           </div>
         </div>
@@ -108,7 +113,6 @@ function Home() {
                 className="feature-icon-img"
                 width="40"
                 height="40"
-                aria-label="Voyager en groupe"
               />
             </div>
             <h3 className="feature-card-title">Voyager en groupe</h3>
@@ -125,7 +129,6 @@ function Home() {
                 className="feature-icon-img"
                 width="40"
                 height="40"
-                aria-label="Voter pour les destinations"
               />
             </div>
             <h3 className="feature-card-title">Voter pour les destinations</h3>
@@ -142,7 +145,6 @@ function Home() {
                 className="feature-icon-img"
                 width="40"
                 height="40"
-                aria-label="Gérer les dépenses"
               />
             </div>
             <h3 className="feature-card-title">Gérez les dépenses</h3>

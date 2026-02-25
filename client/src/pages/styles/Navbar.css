@@ -1,49 +1,44 @@
+/* ================= RESET ================= */
+
 li {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
+
+/* ================= NAVBAR BASE ================= */
+
 .navbar {
   width: 100%;
   background: var(--background);
   border-bottom: 1px solid #e8e8e8;
+  position: sticky;
+  top: 0;
   z-index: 5000;
 }
 
 .navbar-container {
   width: 100%;
-  height: 20vh;
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 2rem;
+  padding: 0 2rem;
+  box-sizing: border-box;
 }
+
+/* ================= LEFT ================= */
 
 .navbar-left {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  margin-top: -2rem;
   gap: 0.75rem;
 }
 
-.navbar-right {
-  display: flex;
-  align-items: center;
-  margin-right: 4rem;
-  margin-top: -2rem;
-  gap: 1rem;
-}
-
-.navbar-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  margin-left: 8.5rem;
-  margin-top: -2rem;
-}
-
 .navbar-logo {
-  width: 5rem;
-  height: 5rem;
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
 }
 
 .website-name {
@@ -54,78 +49,94 @@ li {
   white-space: nowrap;
 }
 
+/* ================= CENTER ================= */
+
+.navbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
 .navbar-page-title {
-  margin: 0;
   font-weight: 500;
   font-family: var(--body-text);
   font-size: var(--font-size-S);
   color: #8b8b8b;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-decoration: none;
 }
 
+/* ================= RIGHT ================= */
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ================= CTA ================= */
+
 .navbar-cta {
-  background: #2f5d2f;
+  background: var(--primary-button);
   color: #fff;
   border: none;
   cursor: pointer;
-  width: 15vw;
-  height: 5.5vh;
   font-weight: 500;
   font-family: var(--body-text);
-  font-size: var(--font-size-M);
+  font-size: var(--font-size-XS);
   padding: 0.6rem 1.25rem;
-  border-radius: 0.5rem;
-  line-height: 1;
-}
-
-.navbar-cta:after {
-  visibility: hidden;
+  border-radius: var(--button-radius);
+  transition: 0.2s ease;
+  white-space: nowrap;
 }
 
 .navbar-cta:hover {
-  filter: brightness(0.95);
+  background: var(--button-hover);
 }
+
+/* ================= PROFILE ================= */
 
 .navbar-profile {
   position: relative;
-  height: auto;
 }
 
 .navbar-profile-Button {
-  width: 3.5rem;
-  height: 3.5rem;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   border: none;
   background-color: rgba(153, 153, 153, 0.35);
   cursor: pointer;
   display: grid;
-  padding: 0;
   place-items: center;
+  padding: 0;
   overflow: hidden;
-  transition: transform 220ms ease, border-radius 220ms ease;
+  transition: transform 0.2s ease;
+}
+
+.navbar-profile-Button:hover {
+  transform: scale(1.05);
 }
 
 .user-icone {
-  width: 2rem;
-  height: 2rem;
+  width: 1.8rem;
+  height: 1.8rem;
   object-fit: contain;
-  display: block;
 }
+
+/* ================= DROPDOWN ================= */
 
 .navbar-menu {
   display: none;
   position: absolute;
   top: calc(100% + 0.5rem);
   right: 0;
-  min-width: 10rem;
+  min-width: 180px;
   background: #fff;
   border: 1px solid #e8e8e8;
   border-radius: 0.75rem;
   padding: 0.5rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  z-index: 50000;
 }
 
 .navbar-menu.is-open {
@@ -133,15 +144,10 @@ li {
   flex-direction: column;
 }
 
-.navbar-profile:has(.navbar-menu.is-open) .navbar-profile-Button {
-  transform: scale(1.2);
-  border-radius: 1rem;
-}
-
 .navbar-username {
   font-weight: 600;
   font-family: var(--body-text);
-  font-size: var(--font-size-S);
+  font-size: var(--font-size-XS);
   padding: 0.5rem;
   border-bottom: 1px solid #e8e8e8;
   margin-bottom: 0.5rem;
@@ -150,22 +156,18 @@ li {
 .navbar-menu-links {
   display: flex;
   flex-direction: column;
+  gap: 0.25rem;
 }
 
 .navbar-menu-link {
   display: block;
-  font-weight: 200;
   font-family: var(--body-text);
-  font-size: var(--font-size-S);
+  font-size: var(--font-size-XS);
   padding: 0.5rem;
   border-radius: 0.5rem;
   text-decoration: none;
   color: #111;
-}
-
-.navbar-menu-links {
-  display: flex;
-  flex-direction: column;
+  transition: background 0.2s ease;
 }
 
 .navbar-menu-links button {
@@ -176,24 +178,23 @@ li {
   padding: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  font-weight: 200;
   font-family: var(--body-text);
-  font-size: var(--font-size-S);
+  font-size: var(--font-size-XS);
   color: #111;
   border-top: 1px solid #e8e8e8;
   margin-top: 0.5rem;
-  padding-top: 0.5rem;
 }
 
 .navbar-menu-link:hover,
 .navbar-menu-links button:hover {
   background: #f3f3f3;
 }
+
 /* ================= AUTH LINKS ================= */
 
 .navbar-auth-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.2rem;
   align-items: center;
 }
 
@@ -201,24 +202,64 @@ li {
   text-decoration: none;
   font-family: var(--body-text);
   font-weight: 600;
-  font-size: 1rem;
+  font-size: var(--font-size-XS);
   color: #111;
   transition: color 0.2s;
-  white-space: nowrap;
 }
 
 .navbar-auth-link:hover {
-  color: #2f5d2f; /* Ta couleur verte */
+  color: var(--primary-button);
 }
 
 .navbar-auth-register {
-  background-color: #2f5d2f; /* Ta couleur verte */
+  background-color: var(--primary-button);
   color: white !important;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  transition: opacity 0.2s;
+  padding: 0.5rem 1rem;
+  border-radius: var(--button-radius);
+  transition: 0.2s ease;
 }
 
 .navbar-auth-register:hover {
-  opacity: 0.9;
+  background-color: var(--button-hover);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+  .website-name {
+    display: none;
+  }
+
+  .navbar-center {
+    display: none;
+  }
+
+  .navbar-cta {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
+
+  .navbar-logo {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .navbar-cta {
+    display: none;
+    /* CTA masqué sur mobile */
+  }
+
+  .navbar-auth-links {
+    gap: 0.8rem;
+  }
+
+  .navbar-auth-register {
+    padding: 0.4rem 0.8rem;
+  }
 }

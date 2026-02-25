@@ -32,7 +32,7 @@ export default function CreateTrip() {
 
   const titleRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLInputElement>(null);
-  const startAtRef = useRef<HTMLInputElement>(null);
+  const [startDate, setStartDate] = useState("");
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -116,7 +116,7 @@ export default function CreateTrip() {
       return;
     }
 
-    if (!titleRef.current || !descriptionRef.current || !startAtRef.current) {
+    if (!titleRef.current || !descriptionRef.current || !startDate) {
       toast.error("Formulaire incomplet");
       return;
     }
@@ -137,7 +137,7 @@ export default function CreateTrip() {
       }
     }
 
-    const departureDate = new Date(startAtRef.current.value);
+    const departureDate = new Date(startDate);
     const returnDate = new Date(endOfTrip.end_at);
 
     if (departureDate < today) {
@@ -158,7 +158,7 @@ export default function CreateTrip() {
     const newTrip = {
       title: titleRef.current.value,
       description: descriptionRef.current.value,
-      start_at: startAtRef.current.value,
+      start_at: startDate,
       end_at: endOfTrip.end_at,
       city: currentCity,
       country: currentCountry,
@@ -244,7 +244,15 @@ export default function CreateTrip() {
             <input
               type="date"
               id="start-date"
-              ref={startAtRef}
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+
+                // Reset date de fin si invalide
+                if (endOfTrip.end_at && e.target.value >= endOfTrip.end_at) {
+                  setEndOfTrip({ end_at: "" });
+                }
+              }}
               min={todayString}
               required
               className={!endOfTrip.end_at ? "date-empty" : ""}
@@ -258,9 +266,10 @@ export default function CreateTrip() {
               id="end-date"
               value={endOfTrip.end_at}
               onChange={(e) => setEndOfTrip({ end_at: e.target.value })}
-              min={todayString}
+              min={startDate || todayString}
               required
               className={!endOfTrip.end_at ? "date-empty" : ""}
+              disabled={!startDate}
             />
           </div>
         </div>

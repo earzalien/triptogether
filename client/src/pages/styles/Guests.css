@@ -117,7 +117,7 @@ li:last-child {
   color: #b91c1c;
 }
 
-.btn-primary,
+/* .btn-primary, */
 .btn-danger,
 .btn-role {
   border-radius: 10px;
@@ -130,14 +130,14 @@ li:last-child {
   min-height: 14px;
 }
 
-.btn-primary {
+/* .btn-primary {
   background-color: var(--primary-button);
   color: #ffffff;
 }
 
 .btn-primary:hover {
   background-color: var(--primary-button);
-}
+} */
 
 .btn-danger {
   background-color: #b91c1c;
@@ -195,7 +195,7 @@ li:last-child {
     padding: 3px 8px;
   }
 
-  .btn-primary,
+  .btn-primairy,
   .btn-danger,
   .btn-role {
     padding: 6px 10px;

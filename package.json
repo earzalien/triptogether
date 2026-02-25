@@ -1,14 +1,14 @@
 {
-  "name": "p3-remote-vert-triptogether",
-  "version": "0.0.1",
+  "name": "triptogether",
+  "version": "0.1.0",
   "description": "Ce projet est un monorepo JS, suivant l'architecture React-Express-MySQL telle qu'enseignée à la Wild Code School (v7.2.4) :",
-  "homepage": "https://github.com/  (hit Enter to use an empty string)/p3-remote-vert-triptogether#readme",
+  "homepage": "https://github.com/earzalien/triptogether#readme",
   "bugs": {
-    "url": "https://github.com/  (hit Enter to use an empty string)/p3-remote-vert-triptogether/issues"
+    "url": "https://github.com/earzalien/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/  (hit Enter to use an empty string)/p3-remote-vert-triptogether.git"
+    "url": "git+https://github.com/earzalien/triptogether.git"
   },
   "workspaces": [
     "client",

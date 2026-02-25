@@ -56,15 +56,11 @@ export default function Navbar() {
             className="navbar-cta"
             onClick={navigateToCreateTrip}
           >
-            Crée ton voyage !
+            Créer un voyage
           </button>
         )}
 
-        <div
-          className="navbar-profile"
-          onMouseEnter={() => setOpenNavBar(true)}
-          onMouseLeave={() => setOpenNavBar(false)}
-        >
+        <div className="navbar-profile">
           {auth ? (
             <div>
               <button
