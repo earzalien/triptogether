@@ -4,12 +4,24 @@ type TripCardProps = {
   title?: string;
   city: string;
   country: string;
-  startAt: string;
-  endAt: string;
-  participants: number | undefined;
-  role?: "organizer" | "participant";
+  startAt?: string | null;
+  endAt?: string | null;
+  participants?: number | null;
+  role?: "organizer" | "participant" | string | null;
   onInvite?: () => void;
 };
+
+function formatDate(dateString?: string | null) {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return dateString;
+
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+}
 
 function TripCard({
   title,
@@ -18,25 +30,14 @@ function TripCard({
   startAt,
   endAt,
   participants,
-  role,
   onInvite,
 }: TripCardProps) {
-  const formatDate = (dateString: string) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-
-    return new Intl.DateTimeFormat("fr-FR", {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-    }).format(date);
-  };
-
   return (
-    <>
-      <article className="tripcard-component">
-        <h2 className="tripcard-title">{title}</h2>
+    <article className="tripcard-component">
+      <div className="tripcard-top">
+        <h2 className="tripcard-title">
+          {title ?? `${city}, ${country}`}
+        </h2>
 
         {onInvite && (
           <button
@@ -47,17 +48,24 @@ function TripCard({
             Inviter
           </button>
         )}
+      </div>
 
-        <p className="tripcard-location">
-          {city}, {country}
-        </p>
-        <p className="tripcard-dates">
-          {formatDate(startAt)} - {formatDate(endAt)}
-        </p>
-        <p className="tripcard-participants">{participants} participant(s)</p>
-        <p className="tripcard-role">{role}</p>
-      </article>
-    </>
+      <div className="tripcard-location">
+        📍 {city}, {country}
+      </div>
+
+      <div className="tripcard-bottom">
+        <div className="tripcard-date">
+          📅 {formatDate(startAt)} - {formatDate(endAt)}
+        </div>
+
+        <div className="tripcard-participants">
+          👥 {participants ?? 0} participant
+          {participants && participants > 1 ? "s" : ""}
+        </div>
+      </div>
+    </article>
+
   );
 }
 

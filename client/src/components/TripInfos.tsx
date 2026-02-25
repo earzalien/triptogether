@@ -1,9 +1,9 @@
+import { useState } from "react";
 import TripCard from "../pages/TripCard";
 import TripInvitation from "../pages/TripInvitation";
 import type { TheTrip } from "../types/tripType";
 import Modal from "./Modal";
 import "../pages/styles/TripInfos.css";
-import { useState } from "react";
 
 type TripInfosProps = {
   trip: TheTrip | null;
@@ -11,15 +11,12 @@ type TripInfosProps = {
 
 function TripInfos({ trip }: TripInfosProps) {
   if (!trip) return null;
+
   const tripId = trip.id;
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
-  const openInviteModal = () => {
-    setIsInviteModalOpen(true);
-  };
+  const openInviteModal = () => setIsInviteModalOpen(true);
+  const closeInviteModal = () => setIsInviteModalOpen(false);
 
-  const closeInviteModal = () => {
-    setIsInviteModalOpen(false);
-  };
   return (
     <>
       <header
@@ -28,15 +25,10 @@ function TripInfos({ trip }: TripInfosProps) {
           backgroundImage: `url(${trip.image_url || "/images/martinique.webp"})`,
         }}
       />
-      {/* <header
-        className="trip-header"
-        style={{
-          backgroundImage: `url(${trip.image_url || "/images/martinique.webp"})`,
-        }}
-      /> */}
-      <section className="trip-trip-infos">
-        <article className="trip-tripinfocard">
-          {trip && (
+
+      <section id="trip-infos" aria-labelledby={`trip-${tripId}-title`}>
+        <div className="trip-infos-inner">
+          <div className="tripcard-wrapper">
             <TripCard
               title={trip.title}
               city={trip.city}
@@ -47,24 +39,24 @@ function TripInfos({ trip }: TripInfosProps) {
               role={trip.role}
               onInvite={openInviteModal}
             />
-          )}
-        </article>
+          </div>
+        </div>
       </section>
+
       <Modal isOpen={isInviteModalOpen} onClose={closeInviteModal}>
-        {trip && (
-          <TripInvitation
-            tripId={tripId}
-            title={trip.title}
-            city={trip.city}
-            country={trip.country}
-            startAt={trip.start_at}
-            endAt={trip.end_at}
-            participants={trip.participants}
-            onClose={closeInviteModal}
-          />
-        )}
+        <TripInvitation
+          tripId={tripId}
+          title={trip.title}
+          city={trip.city}
+          country={trip.country}
+          startAt={trip.start_at}
+          endAt={trip.end_at}
+          participants={trip.participants}
+          onClose={closeInviteModal}
+        />
       </Modal>
     </>
   );
 }
+
 export default TripInfos;
