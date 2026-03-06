@@ -26,7 +26,13 @@ function TripInfos({ trip }: TripInfosProps) {
         }}
       />
 
-      <section id="trip-infos" aria-labelledby={`trip-${tripId}-title`}>
+      <section
+        id="trip-infos"
+        aria-labelledby={`trip-${trip.id}-title`}
+      >
+        <h2 id={`trip-${trip.id}-title`} className="visually-hidden">
+          {trip.title ?? `${trip.city}, ${trip.country}`}
+        </h2>
         <div className="trip-infos-inner">
           <div className="tripcard-wrapper">
             <TripCard
