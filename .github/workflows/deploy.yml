@@ -26,7 +26,6 @@ jobs:
           chmod 644 ~/.ssh/known_hosts
 
       - name: 🚀 Deploy to VPS
-        id: deploy_step
         run: |
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "ENVIRONMENT=PRODUCTION" >> $GITHUB_ENV
@@ -43,7 +42,7 @@ jobs:
           fi
 
       ############################################################
-      # ✅ SUCCESS NOTIFICATION (SECURED)
+      # ✅ SUCCESS NOTIFICATION (FULLY SECURED)
       ############################################################
       - name: ✅ Telegram Success Notification
         if: success()
@@ -52,7 +51,10 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          SAFE_COMMIT=$(printf "%s" "$COMMIT_MESSAGE")
+          SAFE_COMMIT=$(printf "%s" "$COMMIT_MESSAGE" \
+            | sed -e 's/&/\&amp;/g' \
+                  -e 's/</\&lt;/g' \
+                  -e 's/>/\&gt;/g')
 
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
@@ -68,7 +70,7 @@ jobs:
           🔎 <a href='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'>View Logs</a>"
 
       ############################################################
-      # ❌ FAILURE NOTIFICATION (SECURED)
+      # ❌ FAILURE NOTIFICATION (FULLY SECURED)
       ############################################################
       - name: ❌ Telegram Failure Notification
         if: failure()
@@ -77,7 +79,10 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          SAFE_COMMIT=$(printf "%s" "$COMMIT_MESSAGE")
+          SAFE_COMMIT=$(printf "%s" "$COMMIT_MESSAGE" \
+            | sed -e 's/&/\&amp;/g' \
+                  -e 's/</\&lt;/g' \
+                  -e 's/>/\&gt;/g')
 
           curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
             --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
