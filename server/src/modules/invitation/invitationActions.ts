@@ -102,7 +102,7 @@ const add: RequestHandler = async (req, res, next) => {
       user_id,
     );
 
-    const invitationLink = `http://triptogether.artis3w.com/trip/${tripId}/invitation/${invitationId}`;
+    const invitationLink = `${process.env.CLIENT_URL}/trip/${tripId}/invitation/${invitationId}`;
 
     res.status(201).json({ invitationLink });
   } catch (err) {
