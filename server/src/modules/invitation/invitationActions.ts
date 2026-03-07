@@ -102,7 +102,13 @@ const add: RequestHandler = async (req, res, next) => {
       user_id,
     );
 
-    const invitationLink = `http://localhost:3000/trip/${tripId}/invitation/${invitationId}`;
+    const clientUrl = process.env.CLIENT_URL;
+
+    if (!clientUrl) {
+      throw new Error("CLIENT_URL environment variable is not defined");
+    }
+
+    const invitationLink = `${clientUrl}/trip/${tripId}/invitation/${invitationId}`;
 
     res.status(201).json({ invitationLink });
   } catch (err) {
