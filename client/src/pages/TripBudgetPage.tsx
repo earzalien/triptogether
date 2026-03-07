@@ -321,7 +321,7 @@ function TripBudgetPage() {
               <div className="modal-actions">
                 <button
                   type="button"
-                  className="btn-role"
+                  className="modal-btn-budget modal-btn-budget-secondary"
                   onClick={() => setExpenseToDelete(null)}
                   disabled={isDeleting}
                 >
@@ -330,7 +330,7 @@ function TripBudgetPage() {
 
                 <button
                   type="button"
-                  className="btn-danger"
+                  className="modal-btn-secondary modal-btn-danger"
                   onClick={handleDeleteExpense}
                   disabled={isDeleting}
                 >

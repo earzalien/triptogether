@@ -48,4 +48,6 @@ export type TheTrip = {
   user_id?: number;
   participants?: number;
   role?: "organizer" | "participant";
+  owner_firstname?: string;
+  owner_lastname?: string;
 };

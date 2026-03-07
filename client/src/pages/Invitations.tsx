@@ -25,115 +25,88 @@ type InvitationsResponse =
 function Invitations() {
   const { id } = useParams<RouteParams>();
   const tripId = Number(id);
+  const navigate = useNavigate();
 
   const [trip, setTrip] = useState<TheTrip | null>(null);
-  const [mytrip, setmyTrip] = useState<TheTrip | null>(null);
   const [attendees, setAttendees] = useState<Guest[]>([]);
   const [otherInvitations, setOtherInvitations] = useState<Guest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [deleteInvitation, setdeleteInvitation] = useState<Guest | null>(null);
+  const [deleteInvitation, setDeleteInvitation] = useState<Guest | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!tripId) {
       navigate("/", {
         state: {
-          toast: {
-            type: "error",
-            message: "Voyage invalide",
-          },
+          toast: { type: "error", message: "Voyage invalide" },
         },
       });
       return;
     }
 
-    setLoading(true);
-    setError(null);
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`)
+    const controller = new AbortController();
+    const { signal } = controller;
 
-      .then(async (response) => {
-        if (!response.ok) {
-          if (response.status === 401) {
-            toast.error("Veuillez vous connecter pour accéder à ce voyage.");
-            return;
-          }
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const [tripResp, invitationsResp] = await Promise.all([
+          fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}`, {
+            signal,
+          }),
+          fetch(
+            `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`,
+            { signal },
+          ),
+        ]);
+
+        if (!tripResp.ok) {
           throw new Error("Erreur chargement voyage");
         }
-        const data = await response.json();
-        setmyTrip(data);
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Impossible de charger le voyage");
-      });
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`)
-      .then(async (response) => {
-        const result: InvitationsResponse = await response.json();
-
-        if (response.status === 400) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: "Requête invalide",
-              },
-            },
-          });
-          return;
-        }
-
-        if (response.status === 403) {
-          navigate("/", {
-            state: {
-              toast: {
-                type: "error",
-                message: "Accès non autorisé",
-              },
-            },
-          });
-          return;
-        }
-
-        if (!response.ok) {
+        if (!invitationsResp.ok) {
           throw new Error("Erreur chargement invitations");
         }
 
-        if (!("trip" in result)) {
-          setError("Données invitations invalides.");
+        const tripData: TheTrip = await tripResp.json();
+        const invitationsResult: InvitationsResponse =
+          await invitationsResp.json();
+
+        if (!("trip" in invitationsResult)) {
+          setError("Données invalides.");
           return;
         }
 
-        const { trip, invitations } = result;
-        setTrip(trip);
+        const { invitations } = invitationsResult;
+
+        setTrip(tripData);
 
         const creator: Guest = {
-          id: trip.user_id || 0,
-          name: `${trip.owner_firstname ?? ""} ${trip.owner_lastname ?? ""}`.trim(),
+          id: tripData.user_id ?? 0,
+          name: `${tripData.owner_firstname ?? ""} ${
+            tripData.owner_lastname ?? ""
+          }`.trim(),
           avatarUrl: null,
           addedAt: null,
           role: "organisateur",
         };
 
-        const acceptedInvitations = invitations.filter(
-          (invitation) => invitation.status === "accepted",
-        );
+        const acceptedGuests: Guest[] = invitations
+          .filter((inv) => inv.status === "accepted")
+          .map((inv) => ({
+            id: inv.user_id,
+            name: `${inv.invited_firstname} ${inv.invited_lastname}`,
+            avatarUrl: null,
+            addedAt: inv.created_at,
+            role: "membre",
+          }));
 
-        const acceptedGuests: Guest[] = acceptedInvitations.map((inv) => ({
-          id: inv.user_id,
-          name: `${inv.invited_firstname} ${inv.invited_lastname}`,
-          avatarUrl: null,
-          addedAt: inv.created_at,
-          role: "membre",
-        }));
-
-        const attendees: Guest[] = [creator, ...acceptedGuests];
-
-        const otherInvitationsGuests: Guest[] = invitations
-          .filter((invitation) => invitation.status !== "accepted")
+        const otherGuests: Guest[] = invitations
+          .filter((inv) => inv.status !== "accepted")
           .map((inv) => ({
             id: inv.user_id,
             name: `${inv.invited_firstname} ${inv.invited_lastname}`,
@@ -143,72 +116,63 @@ function Invitations() {
             lastReminderAt: null,
           }));
 
-        setAttendees(attendees);
-        setOtherInvitations(otherInvitationsGuests);
-      })
-      .catch((err) => {
-        console.error("Erreur fetch invitations:", err);
-        setError("Impossible de charger les invitations.");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+        setAttendees([creator, ...acceptedGuests]);
+        setOtherInvitations(otherGuests);
+      } catch (err) {
+        if (!signal.aborted) {
+          console.error(err);
+          setError("Impossible de charger les données.");
+        }
+      } finally {
+        if (!signal.aborted) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => controller.abort();
   }, [tripId, navigate]);
 
-  const removeParticipant = (userId: number) => {
+  const removeParticipant = async (userId: number) => {
     if (!tripId) return;
 
-    setIsDeleting(true);
+    try {
+      setIsDeleting(true);
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
-      {
-        method: "DELETE",
-      },
-    )
-      .then(async (response) => {
-        if (response.status === 400) {
-          toast.error("Requête invalide");
-          return;
-        }
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/invitation/${tripId}/${userId}`,
+        { method: "DELETE" },
+      );
 
-        if (response.status === 403) {
-          toast.error("Accès non autorisé");
-          return;
-        }
+      if (!response.ok) {
+        throw new Error();
+      }
 
-        if (response.status === 404) {
-          toast.error("Membre introuvable");
-          return;
-        }
+      setAttendees((prev) =>
+        prev.filter((participant) => participant.id !== userId),
+      );
 
-        if (!response.ok) {
-          toast.error("Erreur serveur.");
-          return;
-        }
-
-        setAttendees((prev) =>
-          prev.filter((participant) => participant.id !== userId),
-        );
-
-        toast.success("Membre retiré du voyage.");
-      })
-      .catch(() => {
-        toast.error("Erreur serveur.");
-      })
-      .finally(() => {
-        setIsDeleting(false);
-        setdeleteInvitation(null);
-      });
+      toast.success("Membre retiré du voyage.");
+    } catch {
+      toast.error("Erreur lors de la suppression.");
+    } finally {
+      setIsDeleting(false);
+      setDeleteInvitation(null);
+    }
   };
 
   return (
     <>
-      {!loading && trip && <TripInfos trip={mytrip} />}
+      {!loading && trip && <TripInfos trip={trip} />}
+
       <div className="page-membre">
         <NavTabs />
+
         <section id="member-list">
-          {loading && <p className="loading-text">Chargement des membres</p>}
+          {loading && <p className="loading-text">Chargement des membres...</p>}
+
           {error && <p className="error">{error}</p>}
 
           {!loading && !error && (
@@ -217,8 +181,9 @@ function Invitations() {
                 title="Participants"
                 invited={attendees}
                 type="attendees"
-                delete={setdeleteInvitation}
+                delete={setDeleteInvitation}
               />
+
               <Guests
                 title="Invités"
                 invited={otherInvitations}
@@ -232,6 +197,7 @@ function Invitations() {
           <div className="modal-backdrop">
             <div className="modal">
               <h4>Retirer ce membre ?</h4>
+
               <p>
                 Voulez-vous vraiment retirer{" "}
                 <strong>{deleteInvitation.name}</strong> de ce voyage ?
@@ -240,15 +206,16 @@ function Invitations() {
               <div className="modal-actions">
                 <button
                   type="button"
-                  className="btn-role"
-                  onClick={() => setdeleteInvitation(null)}
+                  className="modal-btn modal-btn-secondary"
+                  onClick={() => setDeleteInvitation(null)}
                   disabled={isDeleting}
                 >
                   Annuler
                 </button>
+
                 <button
                   type="button"
-                  className="btn-danger"
+                  className="modal-btn modal-btn-danger"
                   onClick={() => removeParticipant(deleteInvitation.id)}
                   disabled={isDeleting}
                 >

@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useParams } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
 
-import "./styles/Invitation.css";
 import "./styles/TripInvitation.css";
 
 type InvitationForm = {
@@ -30,6 +29,15 @@ function TripInvitation({
   participants,
   onClose,
 }: TripInvitationProps) {
+  const { id } = useParams<{ id: string }>();
+
+  const [invitationForm, setInvitationForm] = useState<InvitationForm>({
+    email: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
@@ -41,14 +49,6 @@ function TripInvitation({
       year: "numeric",
     }).format(date);
   };
-  const { id } = useParams<{ id: string }>();
-
-  const [invitationForm, setInvitationForm] = useState<InvitationForm>({
-    email: "",
-    message: "",
-  });
-
-  const [loading, setLoading] = useState(false);
 
   const updateInvitationForm = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -101,7 +101,6 @@ function TripInvitation({
       }
 
       await copyToClipboard(data.invitationLink);
-
       setInvitationForm({ email: "", message: "" });
     } catch {
       toast.error("Erreur lors de l'envoi de l'invitation");
@@ -111,38 +110,50 @@ function TripInvitation({
   };
 
   return (
-    <>
-      <section
-        className="tripinvitation-invitation-form"
-        onClick={closeModalOverlay}
-        tabIndex={-1}
-        onKeyDown={() => {}}
-      >
-        <ToastContainer position="top-right" autoClose={5000} theme="light" />
+    <section
+      className="tripinvitation-overlay"
+      onClick={closeModalOverlay}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && onClose) {
+          onClose(e as unknown as React.MouseEvent<HTMLElement>);
+        }
+      }}
+      aria-modal="true"
+    >
 
-        <article className="tripinvitation-head">
+      <ToastContainer position="top-right" autoClose={3000} theme="light" />
+      <article className="tripinvitation-invitation-form">
+        <div className="tripinvitation-head">
           <p>
-            <img src="/letter-picture.png" alt="" width={80} />
+            <img src="/letter-picture.png" alt="" width={60} />
             Inviter un participant
           </p>
-          <p>Invitez une personne à rejoindre ce voyage par email</p>
-        </article>
+          <span>Invitez une personne à rejoindre ce voyage par email</span>
+        </div>
 
-        <article className="tripinvitation-bg-image" />
+        <div className="tripinvitation-bg-image" />
 
-        <article className="tripinvitation-trip-infos">
+        <div className="tripinvitation-trip-infos">
           <h2>{title}</h2>
-          <p className="tripcard-location">
-            {city}, {country}
-          </p>
-          <p className="tripcard-dates">
-            {formatDate(startAt)} - {formatDate(endAt)}
-          </p>
-          <p className="tripcard-participants">{participants} participant(s)</p>
-        </article>
+
+          <div className="tripinvitation-location">
+            📍 {city}, {country}
+          </div>
+
+          <div className="tripinvitation-meta">
+            <div>
+              📅 {formatDate(startAt)} - {formatDate(endAt)}
+            </div>
+
+            <div>
+              👥 {participants ?? 0} participant
+              {participants && participants > 1 ? "s" : ""}
+            </div>
+          </div>
+        </div>
 
         <form onSubmit={sendInvitation} className="tripinvitation-form-inputs">
-          <label className="tripinvitation-email-form">
+          <label>
             Adresse email*
             <input
               type="email"
@@ -150,18 +161,17 @@ function TripInvitation({
               value={invitationForm.email}
               onChange={updateInvitationForm}
               required
-              placeholder="janedoe@caramail.com"
+              placeholder="adresse@email.com"
             />
           </label>
 
-          <label className="tripinvitation-message-form">
+          <label>
             Message
             <textarea
               name="message"
               value={invitationForm.message}
               onChange={updateInvitationForm}
-              required
-              placeholder="Type your message here"
+              placeholder="Ajoutez un message personnalisé..."
             />
           </label>
 
@@ -182,8 +192,8 @@ function TripInvitation({
             Annuler
           </button>
         </form>
-      </section>
-    </>
+      </article>
+    </section>
   );
 }
 
