@@ -31,43 +31,63 @@ jobs:
           if [ "${{ github.ref }}" = "refs/heads/main" ]; then
             echo "ENVIRONMENT=PRODUCTION" >> $GITHUB_ENV
             echo "🚀 Deploying PRODUCTION"
-            ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash /home/ubuntu/deploy-triptogether.sh"
+            ssh -o StrictHostKeyChecking=yes \
+              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+              "bash /home/ubuntu/deploy-triptogether.sh"
           else
             echo "ENVIRONMENT=STAGING" >> $GITHUB_ENV
             echo "🧪 Deploying STAGING"
-            ssh ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "bash /home/ubuntu/deploy-triptogether-staging.sh"
+            ssh -o StrictHostKeyChecking=yes \
+              ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+              "bash /home/ubuntu/deploy-triptogether-staging.sh"
           fi
 
-      # ✅ SUCCESS NOTIFICATION
+      ############################################################
+      # ✅ SUCCESS NOTIFICATION (SECURED)
+      ############################################################
       - name: ✅ Telegram Success Notification
         if: success()
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
-          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d parse_mode="HTML" \
-          -d text="✅ <b>${{ env.ENVIRONMENT }} Deploy SUCCESS</b>
+          SAFE_COMMIT=$(printf "%s" "$COMMIT_MESSAGE")
+
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "parse_mode=HTML" \
+            --data-urlencode "text=✅ <b>${ENVIRONMENT} Deploy SUCCESS</b>
 
           📦 <b>Repo:</b> ${{ github.repository }}
           🌿 <b>Branch:</b> ${{ github.ref_name }}
           👤 <b>Author:</b> ${{ github.actor }}
-          📝 <b>Commit:</b> ${{ github.event.head_commit.message }}
+          📝 <b>Commit:</b> ${SAFE_COMMIT}
           🕒 <b>Date:</b> $(date -u '+%Y-%m-%d %H:%M:%S UTC')
-          
+
           🔎 <a href='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'>View Logs</a>"
 
-      # ❌ FAILURE NOTIFICATION
+      ############################################################
+      # ❌ FAILURE NOTIFICATION (SECURED)
+      ############################################################
       - name: ❌ Telegram Failure Notification
         if: failure()
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
-          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
-          -d parse_mode="HTML" \
-          -d text="❌ <b>${{ env.ENVIRONMENT }} Deploy FAILED</b>
+          SAFE_COMMIT=$(printf "%s" "$COMMIT_MESSAGE")
+
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "parse_mode=HTML" \
+            --data-urlencode "text=❌ <b>${ENVIRONMENT} Deploy FAILED</b>
 
           📦 <b>Repo:</b> ${{ github.repository }}
           🌿 <b>Branch:</b> ${{ github.ref_name }}
           👤 <b>Author:</b> ${{ github.actor }}
-          📝 <b>Commit:</b> ${{ github.event.head_commit.message }}
+          📝 <b>Commit:</b> ${SAFE_COMMIT}
           🕒 <b>Date:</b> $(date -u '+%Y-%m-%d %H:%M:%S UTC')
 
           ⚠️ <b>Check immediately.</b>
