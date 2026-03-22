@@ -137,7 +137,7 @@ const add: RequestHandler = async (req, res, next) => {
     });
 
     if (error) {
-      throw new Error("Erreur lors de l'envoi de l'email d'invitation");
+      console.error("Erreur envoi email invitation:", error);
     }
 
     res.status(201).json({ invitationLink, emailSent: !error, emailData: data });
