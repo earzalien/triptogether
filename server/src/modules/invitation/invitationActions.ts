@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 import tripRepository from "../trip/tripRepository";
 import userRepository from "../user/userRepository";
 import invitationRepository from "./invitationRepository";
+import resend from "../../libs/resend";
 
 const read: RequestHandler = async (req, res, next) => {
   try {
@@ -109,8 +110,37 @@ const add: RequestHandler = async (req, res, next) => {
     }
 
     const invitationLink = `${clientUrl}/trip/${tripId}/invitation/${invitationId}`;
+    
+    const escapeHtml = (unsafe: string) =>
+      unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-    res.status(201).json({ invitationLink });
+    const safeMessage = escapeHtml(message);
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.RESEND_FROM as string,
+      to: email,
+      subject: "Invitation à rejoindre un voyage sur TripTogether",
+      html: `
+    <p>Bonjour,</p>
+    <p>Vous avez reçu une invitation à rejoindre un voyage sur TripTogether.</p>
+    <p>Message :</p>
+    <blockquote>${safeMessage}</blockquote>
+    <p>Pour voir l'invitation et répondre, cliquez sur le lien ci-dessous :</p>
+    <p><a href="${invitationLink}">${invitationLink}</a></p>
+    <p>À bientôt sur TripTogether !</p>
+  `,
+    });
+
+    if (error) {
+      console.error("Erreur envoi email invitation:", error);
+    }
+
+    res.status(201).json({ invitationLink, emailSent: !error, emailData: data });
   } catch (err) {
     next(err);
   }
