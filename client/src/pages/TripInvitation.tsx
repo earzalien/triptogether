@@ -103,8 +103,9 @@ function TripInvitation({
 
       if (copyLink) {
         await copyToClipboard(data.invitationLink);
-        toast.success("Email envoyé avec succès");
       }
+
+      toast.success("Email envoyé avec succès");
 
       setInvitationForm({ email: "", message: "" });
       setCopyLink(false);
@@ -114,6 +115,7 @@ function TripInvitation({
       setLoading(false);
     }
   };
+
 
   return (
     <section
