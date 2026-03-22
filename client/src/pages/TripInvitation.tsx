@@ -35,7 +35,7 @@ function TripInvitation({
     email: "",
     message: "",
   });
-
+  const [copyLink, setCopyLink] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -62,6 +62,7 @@ function TripInvitation({
 
   const cancelInvitation = (e: React.MouseEvent<HTMLButtonElement>) => {
     setInvitationForm({ email: "", message: "" });
+    setCopyLink(false);
     if (onClose) onClose(e);
   };
 
@@ -74,7 +75,7 @@ function TripInvitation({
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Lien d’invitation copié 📋");
+      toast.success("Lien d'invitation copié");
     } catch {
       toast.error("Impossible de copier le lien");
     }
@@ -100,8 +101,13 @@ function TripInvitation({
         throw new Error(data.error || "Erreur lors de l'envoi");
       }
 
-      await copyToClipboard(data.invitationLink);
+      if (copyLink) {
+        await copyToClipboard(data.invitationLink);
+        toast.success("Email envoyé avec succès");
+      }
+
       setInvitationForm({ email: "", message: "" });
+      setCopyLink(false);
     } catch {
       toast.error("Erreur lors de l'envoi de l'invitation");
     } finally {
@@ -120,7 +126,6 @@ function TripInvitation({
       }}
       aria-modal="true"
     >
-
       <ToastContainer position="top-right" autoClose={3000} theme="light" />
       <article className="tripinvitation-invitation-form">
         <div className="tripinvitation-head">
@@ -162,6 +167,7 @@ function TripInvitation({
               onChange={updateInvitationForm}
               required
               placeholder="adresse@email.com"
+              disabled={loading}
             />
           </label>
 
@@ -172,15 +178,28 @@ function TripInvitation({
               value={invitationForm.message}
               onChange={updateInvitationForm}
               placeholder="Ajoutez un message personnalisé..."
+              disabled={loading}
             />
+          </label>
+
+          <label>
+            <div className="tripinvitation-copy-checkbox">
+            <input
+              type="checkbox"
+              checked={copyLink}
+              onChange={(e) => setCopyLink(e.target.checked)}
+              disabled={loading}
+            />
+            Copier aussi le lien d'invitation
+            </div>
           </label>
 
           <button
             type="submit"
             className="tripinvitation-btn-send-invitation"
-            disabled={loading}
+            disabled={loading || !invitationForm.email}
           >
-            {loading ? "Copie..." : "Copier le lien d'invitation"}
+            {loading ? "Envoi..." : "Envoyer par email"}
           </button>
 
           <button

@@ -143,6 +143,19 @@
 .tripinvitation-btn-cancel-invitation:hover {
   background: #f3f4f6;
 }
+.tripinvitation-copy-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.tripinvitation-copy-checkbox input[type="checkbox"] {
+  margin-top: 0.05rem;
+  flex-shrink: 0;
+}
 
 @media (max-width: 768px) {
   .tripinvitation-invitation-form {
