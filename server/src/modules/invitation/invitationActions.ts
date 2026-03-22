@@ -119,7 +119,7 @@ const add: RequestHandler = async (req, res, next) => {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 
-    const safeMessage = escapeHtml(message);
+    const safeMessage = escapeHtml(typeof message === "string" ? message : String(message ?? ""));
 
     const { data, error } = await resend.emails.send({
       from: process.env.RESEND_FROM as string,
