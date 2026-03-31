@@ -241,3 +241,20 @@
     font-size: 0.9rem;
   }
 }
+
+.home-notice {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem 1rem;
+}
+
+.home-notice p {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background-color: #fff7e8;
+  border: 1px solid #f0d7a1;
+  border-radius: 12px;
+  color: #6b5322;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}

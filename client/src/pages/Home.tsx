@@ -29,6 +29,13 @@ function Home() {
 
   return (
     <div className="home">
+      <section className="home-notice" aria-live="polite">
+        <p>
+          <strong>Information :</strong> TripTogether est un projet réalisé dans un cadre pédagogique pour la préparation du titre DWWM.
+          Le site restera accessible temporairement puis sera prochainement mis hors ligne.
+          Cette plateforme a été conçue à des fins d’apprentissage et de démonstration, et non pour un usage public ou commercial.
+        </p>
+      </section>
       <section className="hero-section">
         <h1 className="hero-title">Planifiez vos aventures ensemble</h1>
         <h2 className="hero-subtitle">
