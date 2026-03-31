@@ -241,3 +241,38 @@
     font-size: 0.9rem;
   }
 }
+
+.home-notice {
+  max-width: 1200px;
+  margin: auto;
+  padding: 1rem 1rem;
+}
+
+.home-notice p {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  background-color: #fff7e8;
+  border: 1px solid #f0d7a1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  color: #5a4318;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.home-notice p strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .home-notice p {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+}
